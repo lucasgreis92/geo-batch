@@ -24,7 +24,6 @@ public class Devices {
   @Id
   @Column(name = "device_serial")
   private String deviceSerial;
-/*  private String type;*/
   private String token;
   private LocalDateTime created;
   private Boolean disabled;
@@ -37,8 +36,17 @@ public class Devices {
   @Column(name = "callbacks_id", columnDefinition = "jsonb")
   private JsonNode callbacksId;
   private String parent;
- /* @Column(name = "last_response_code")
-  private Long lastResponseCode;*/
+  @Column(name = "type_id")
+  private UUID typeId;
+  @Column(name = "building_id")
+  private UUID buildingId;
+
+  @Column(name = "soil_humidity_offset")
+  private Double soilHumidityOffset;
+
+  private String subtype;
+
+
 
   public String getDeviceSerial() {
     return deviceSerial;
@@ -128,5 +136,35 @@ public class Devices {
     this.lastResponseCode = lastResponseCode;
   }*/
 
+  public UUID getTypeId() {
+    return typeId;
+  }
 
+  public void setTypeId(UUID typeId) {
+    this.typeId = typeId;
+  }
+
+  public UUID getBuildingId() {
+    return buildingId;
+  }
+
+  public void setBuildingId(UUID buildingId) {
+    this.buildingId = buildingId;
+  }
+
+  public Double getSoilHumidityOffset() {
+    return soilHumidityOffset;
+  }
+
+  public void setSoilHumidityOffset(Double soilHumidityOffset) {
+    this.soilHumidityOffset = soilHumidityOffset;
+  }
+
+  public String getSubtype() {
+    return subtype;
+  }
+
+  public void setSubtype(String subtype) {
+    this.subtype = subtype;
+  }
 }
