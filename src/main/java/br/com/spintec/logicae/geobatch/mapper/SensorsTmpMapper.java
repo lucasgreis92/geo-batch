@@ -25,7 +25,7 @@ public class SensorsTmpMapper extends AbstractMapper<SensorsTmp, SensorsDtoV1> {
         model.setValue(dto.getValue());
         long port = (long) dto.getSensor();
         model.setPort(port);
-        model.setType(model.getType());
+        model.setType(dto.getType());
         model.setCreated(LocalDateTime.now());
         return model;
     }
