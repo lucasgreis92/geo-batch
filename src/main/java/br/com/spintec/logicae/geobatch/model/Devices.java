@@ -24,7 +24,7 @@ public class Devices {
   @Id
   @Column(name = "device_serial")
   private String deviceSerial;
-  private String type;
+/*  private String type;*/
   private String token;
   private LocalDateTime created;
   private Boolean disabled;
@@ -48,13 +48,13 @@ public class Devices {
     this.deviceSerial = deviceSerial;
   }
 
-  public String getType() {
+ /* public String getType() {
     return type;
   }
 
   public void setType(String type) {
     this.type = type;
-  }
+  }*/
 
   public String getToken() {
     return token;
