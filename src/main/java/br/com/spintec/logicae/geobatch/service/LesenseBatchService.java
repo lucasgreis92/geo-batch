@@ -105,12 +105,12 @@ public class LesenseBatchService {
                     return d.getDeviceSerial().equalsIgnoreCase(sensor.getDeviceSerial());
                 }).findFirst();
                 if (!device.isPresent()) {
-                    Devices dev = new Devices();
+                   /* Devices dev = new Devices();
                     dev.setCreated(LocalDateTime.now());
                     dev.setDeviceSerial(sensor.getDeviceSerial());
                     dev.setType(sensor.getType());
                     dev.setDisabled(false);
-                    newDevices.add(dev);
+                    newDevices.add(dev);*/
                 } else {
                     if (device.get().getContractId() != null) {
                         Optional<Contracts> contract = contracts.stream().filter( c -> {

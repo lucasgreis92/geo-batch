@@ -37,8 +37,8 @@ public class Devices {
   @Column(name = "callbacks_id", columnDefinition = "jsonb")
   private JsonNode callbacksId;
   private String parent;
-  @Column(name = "last_response_code")
-  private Long lastResponseCode;
+ /* @Column(name = "last_response_code")
+  private Long lastResponseCode;*/
 
   public String getDeviceSerial() {
     return deviceSerial;
@@ -111,10 +111,10 @@ public class Devices {
   public void setParent(String parent) {
     this.parent = parent;
   }
-
+/*
   public Long getLastResponseCode() {
     return lastResponseCode;
-  }
+  }*/
 
   public JsonNode getCallbacksId() {
     return callbacksId;
@@ -123,10 +123,10 @@ public class Devices {
   public void setCallbacksId(JsonNode callbacksId) {
     this.callbacksId = callbacksId;
   }
-
+/*
   public void setLastResponseCode(Long lastResponseCode) {
     this.lastResponseCode = lastResponseCode;
-  }
+  }*/
 
 
 }
