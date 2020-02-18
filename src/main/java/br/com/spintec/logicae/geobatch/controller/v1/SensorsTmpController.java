@@ -6,6 +6,7 @@ import br.com.spintec.logicae.geobatch.model.SensorsTmp;
 import br.com.spintec.logicae.geobatch.service.SensorsTmpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,7 @@ public class SensorsTmpController {
     private SensorsTmpService sensorsTmpService;
 
     @PostMapping
-    public void saveBatch(ArrayList<SensorsDtoV1> sensors) {
+    public void saveBatch(@RequestBody ArrayList<SensorsDtoV1> sensors) {
         sensorsTmpService.savelAll(sensors);
     }
 
