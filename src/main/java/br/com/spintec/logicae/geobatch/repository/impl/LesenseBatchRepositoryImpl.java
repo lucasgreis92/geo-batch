@@ -14,7 +14,7 @@ public class LesenseBatchRepositoryImpl implements LesenseBatchRepositoryCustom 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateData(String serial) {
-        Query query =em.createNativeQuery("call  generate_data('"+serial+"')");
+        Query query =em.createNativeQuery("{call  generate_data('"+serial+"')}");
         query.getSingleResult();
     }
 }
