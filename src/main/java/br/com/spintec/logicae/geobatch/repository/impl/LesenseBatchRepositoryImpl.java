@@ -15,6 +15,6 @@ public class LesenseBatchRepositoryImpl implements LesenseBatchRepositoryCustom 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateData(String serial) {
         Query query =em.createNativeQuery("{call  generate_data('"+serial+"')}");
-        query.getSingleResult();
+        query.executeUpdate();
     }
 }
