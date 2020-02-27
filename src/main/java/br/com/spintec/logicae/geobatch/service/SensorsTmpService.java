@@ -39,15 +39,9 @@ public class SensorsTmpService {
     public List<SensorsTmp> savelAll(List<SensorsDtoV1> sensores){
         ObjectMapper objectMapper = new ObjectMapper();
         List<SensorsTmp> tmps = sensorsTmpMapper.convertToModelList(sensores);
-        try {
-            log.info("################################# recived ##################################");
-            log.info(objectMapper.writeValueAsString(sensores));
-            log.info("################################# tmps ##################################");
-            log.info(objectMapper.writeValueAsString(tmps));
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        log.info("################################# recived ##################################");
+
         return sensorsTmpRepository.saveAll(tmps);
     }
 }

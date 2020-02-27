@@ -99,6 +99,14 @@ public class LesenseBatchService {
             }
             List<Sensors> sensores = sensorsTmpMapper.tmpToSensorsList(tmps);
             List<Devices> devices = devicesRepository.findAll();
+            log.info("######################### iniciado generateData #########################");
+            devices.forEach( d -> {
+                if (d.getContractId() != null) {
+                    lesenseBatchRepository.generateData(d.getDeviceSerial());
+                }
+
+            });
+            log.info("######################### finalizado generateData #########################");
             List<Contracts> contracts = contractsRepository.findAll();
             List<Devices> newDevices = new ArrayList<>();
             sensores.forEach( sensor -> {
