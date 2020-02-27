@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,12 +41,15 @@ public class LesenseBatchService {
     @Autowired
     private ContractsRepository contractsRepository;
 
+    @Autowired
+    private DevicesService devicesService;
+
     private Semaphore semaphoreSendSensors = new Semaphore(1);
     private static boolean ieSendSensors = false;
 
     final static Logger log = LoggerFactory.getLogger(LesenseBatchService.class);
 
-    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendSensorsStart() {
         try {
             semaphoreSendSensors.acquire();
@@ -56,17 +62,13 @@ public class LesenseBatchService {
             log.info("######################### iniciado sendSensors #########################");
             sendSensors();
             log.info("######################### finalizado sendSensors #########################");
-
+            semaphoreSendSensors.acquire();
+            ieSendSensors = false;
+            semaphoreSendSensors.release();
         } catch (Exception ex) {
             log.error("erro sendSensors",ex);
-        } finally {
-            try {
-                semaphoreSendSensors.acquire();
-                ieSendSensors = false;
-                semaphoreSendSensors.release();
-            } catch (Exception e) {
-                log.error("erro sendSensors",e);
-            }
+            ieSendSensors = false;
+            semaphoreSendSensors.release();
         }
     }
 
@@ -96,9 +98,7 @@ public class LesenseBatchService {
             List<Devices> devices = devicesRepository.findAll();
             log.info("######################### iniciado generateData #########################");
             devices.forEach( d -> {
-                if (d.getContractId() != null) {
-                    lesenseBatchRepository.generateData(d.getDeviceSerial());
-                }
+                devicesService.generateData(d.getDeviceSerial());
 
             });
             log.info("######################### finalizado generateData #########################");
@@ -150,7 +150,7 @@ public class LesenseBatchService {
                     seriais.put(s.getDeviceSerial(),s.getDeviceSerial());
                 });
                 seriais.keySet().forEach( serial -> {
-                    lesenseBatchRepository.generateData(serial);
+                    devicesService.generateData(serial);
                 });
             }
 

@@ -14,7 +14,7 @@ public class ThreadConfig {
     @Bean(name = "taskExecutor")
     public Executor taskExecutor() {
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(6);
+        executor.setCorePoolSize(15);
         executor.setMaxPoolSize(200);
         executor.setQueueCapacity(10000);
         executor.setThreadNamePrefix("lesense-batch-");

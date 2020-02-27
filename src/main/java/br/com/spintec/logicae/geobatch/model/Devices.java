@@ -6,15 +6,15 @@ import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "devices")
+@NamedStoredProcedureQuery(name= "Devices.generateData",
+        procedureName = "generate_data",
+        parameters = {@StoredProcedureParameter(mode = ParameterMode.IN,type = String.class, name= "serial_p")})
 @TypeDef(
         name = "jsonb-node",
         typeClass = JsonNodeBinaryType.class

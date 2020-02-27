@@ -4,9 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@NamedStoredProcedureQuery(name= "generate_data",
-        procedureName = "generate_data",
-parameters = {@StoredProcedureParameter(mode = ParameterMode.IN,type = String.class, name= "serial_p")})
+
 @Table(name = "lesense_batch")
 public class LesenseBatch {
 

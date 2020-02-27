@@ -20,6 +20,13 @@ public class DevicesService {
         return devicesRepository.saveAndFlush(devices);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void generateData(String serial) {
+        devicesRepository.flush();
+        devicesRepository.generateData(serial);
+        devicesRepository.flush();
+    }
+
     public Optional<Devices> findById(String serial) {
         return devicesRepository.findById(serial);
     }
