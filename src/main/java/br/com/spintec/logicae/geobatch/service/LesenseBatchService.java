@@ -93,11 +93,6 @@ public class LesenseBatchService {
         String error = null;
         try {
             batch = newLesenseBatch();
-            List<SensorsTmp> tmps = sensorsTmpService.findAll();
-            if (tmps.isEmpty()) {
-                return;
-            }
-            List<Sensors> sensores = sensorsTmpMapper.tmpToSensorsList(tmps);
             List<Devices> devices = devicesRepository.findAll();
             log.info("######################### iniciado generateData #########################");
             devices.forEach( d -> {
@@ -107,6 +102,12 @@ public class LesenseBatchService {
 
             });
             log.info("######################### finalizado generateData #########################");
+            List<SensorsTmp> tmps = sensorsTmpService.findAll();
+            if (tmps.isEmpty()) {
+                return;
+            }
+            List<Sensors> sensores = sensorsTmpMapper.tmpToSensorsList(tmps);
+
             List<Contracts> contracts = contractsRepository.findAll();
             List<Devices> newDevices = new ArrayList<>();
             sensores.forEach( sensor -> {
