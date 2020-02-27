@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
@@ -131,9 +132,20 @@ public class LesenseBatchService {
             }
             devicesRepository.saveAll(devices);
             if (!sensores.isEmpty()) {
-                sensorsService.saveAll(sensores);
+                sensores =  sensorsService.saveAll(sensores);
             }
             sensorsTmpService.deleteAll(tmps);
+            if (!sensores.isEmpty()) {
+                HashMap<String,String> seriais = new HashMap<>();
+                sensores.forEach( s -> {
+                    seriais.put(s.getDeviceSerial(),s.getDeviceSerial());
+                });
+                seriais.keySet().forEach( serial -> {
+                    lesenseBatchRepository.generateData(serial);
+                });
+            }
+
+
         } catch (Exception ex) {
             log.error("erro sendSensors", ex);
             error = ex.getMessage();
