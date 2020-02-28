@@ -145,12 +145,8 @@ public class LesenseBatchService {
             }
             sensorsTmpService.deleteAll(tmps);
             if (!sensores.isEmpty()) {
-                HashMap<String,String> seriais = new HashMap<>();
                 sensores.forEach( s -> {
-                    seriais.put(s.getDeviceSerial(),s.getDeviceSerial());
-                });
-                seriais.keySet().forEach( serial -> {
-                    devicesService.generateData(serial);
+                    devicesService.generateData(s.getDeviceSerial());
                 });
             }
 
