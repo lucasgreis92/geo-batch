@@ -52,23 +52,12 @@ public class LesenseBatchService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendSensorsStart() {
         try {
-            semaphoreSendSensors.acquire();
-            if (ieSendSensors) {
-                return;
-            }
-            ieSendSensors= true;
-            semaphoreSendSensors.release();
-
             log.info("######################### iniciado sendSensors #########################");
             sendSensors();
             log.info("######################### finalizado sendSensors #########################");
-            semaphoreSendSensors.acquire();
-            ieSendSensors = false;
-            semaphoreSendSensors.release();
         } catch (Exception ex) {
             log.error("erro sendSensors",ex);
             ieSendSensors = false;
-            semaphoreSendSensors.release();
         }
     }
 
