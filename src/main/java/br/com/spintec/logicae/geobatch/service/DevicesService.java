@@ -43,7 +43,7 @@ public class DevicesService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateData(Devices devices) {
-        if (devices.getSubtype().equalsIgnoreCase("crane")) {
+        if (devices.getSubtype() != null && devices.getSubtype().equalsIgnoreCase("crane")) {
             PORT_LIST.forEach( port -> {
 
                 LocalDateTime lastOff = craneDataRepository.findLastOff(devices.getDeviceSerial(),port);
