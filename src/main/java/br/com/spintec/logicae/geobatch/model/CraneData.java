@@ -23,8 +23,10 @@ public class CraneData {
 
     private LocalDateTime created;
 
+    @Column(name = "\"on\"")
     private LocalDateTime on;
 
+    @Column(name = "\"off\"")
     private LocalDateTime off;
 
     private Integer port;
