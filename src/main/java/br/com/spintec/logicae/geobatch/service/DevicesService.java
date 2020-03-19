@@ -45,11 +45,8 @@ public class DevicesService {
     public void generateData(Devices devices) {
         if (devices.getSubtype().equalsIgnoreCase("crane")) {
             PORT_LIST.forEach( port -> {
-                LocalDateTime lastOff = null;
-                List<CraneData> lastCraneDataList = craneDataRepository.findLastOff(devices.getDeviceSerial(),port);
-                if (lastCraneDataList != null && !lastCraneDataList.isEmpty()) {
-                    lastOff = lastCraneDataList.get(0).getOff();
-                }
+
+                LocalDateTime lastOff = craneDataRepository.findLastOff(devices.getDeviceSerial(),port);
                 if (lastOff != null) {
                     List<Sensors> sensorsList = sensorsRepository.findByCollected(lastOff, (long) port);
                     if (sensorsList != null && !sensorsList.isEmpty()) {
