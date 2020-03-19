@@ -50,11 +50,6 @@ public class DevicesService {
                 if (lastOff != null) {
                     List<Sensors> sensorsList = sensorsRepository.findByCollected(lastOff, (long) port);
                     if (sensorsList != null && !sensorsList.isEmpty()) {
-
-                        sensorsList = sensorsList.stream().sorted( (s1,s2) ->{
-                            return s1.getCollected().compareTo(s2.getCollected());
-                        }).collect(Collectors.toList());
-
                         List<CraneData> inserts = new ArrayList<>();
                         CraneData newCrane = null;
                         CraneData lastCrane = null;
