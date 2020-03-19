@@ -17,8 +17,8 @@ public interface CraneDataRepository extends JpaRepository<CraneData, UUID>, Cra
             "(select coalesce(max(cd.off), current_timestamp - INTERVAL '10min') " +
             "from crane_data cd " +
             "where cd.device_serial = ?1 " +
-            "and cd.port = ?2)" +
-            "and cd1.device_serial = ?1" +
+            "and cd.port = ?2) " +
+            "and cd1.device_serial = ?1 " +
             "and cd1.port = ?2 ",
             nativeQuery = true)
     List<CraneData> findLastOff(String deviceSerial, Integer port);
