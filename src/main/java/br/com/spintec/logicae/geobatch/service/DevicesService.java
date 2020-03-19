@@ -85,7 +85,7 @@ public class DevicesService {
 
                         }
                         if (!inserts.isEmpty()) {
-                            log.info(" ######### inserindo sensor "+ devices.getDeviceSerial() + " porta " + port + " ######### ");
+                            log.info(" ######### inserindo sensor "+ devices.getDeviceSerial() + " porta " + port + " quantidade ("+sensorsList.size()+") ######### ");
                             craneDataRepository.saveAll(inserts);
                         }
 
