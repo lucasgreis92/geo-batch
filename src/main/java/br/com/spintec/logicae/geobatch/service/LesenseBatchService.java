@@ -87,7 +87,7 @@ public class LesenseBatchService {
             List<Devices> devices = devicesRepository.findAll();
             log.info("######################### iniciado generateData #########################");
             devices.forEach( d -> {
-                devicesService.generateData(d.getDeviceSerial());
+                devicesService.generateData(d);
 
             });
             log.info("######################### finalizado generateData #########################");
@@ -135,7 +135,9 @@ public class LesenseBatchService {
             sensorsTmpService.deleteAll(tmps);
             if (!sensores.isEmpty()) {
                 sensores.forEach( s -> {
-                    devicesService.generateData(s.getDeviceSerial());
+                    devicesService.generateData(  devices.stream().filter(d -> {
+                        return d.getDeviceSerial().equalsIgnoreCase(s.getDeviceSerial());
+                    }).findFirst().get());
                 });
             }
 
