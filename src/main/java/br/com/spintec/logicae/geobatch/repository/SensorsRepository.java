@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
 
-    @Query(value = "select * from sensors where collected > ?1 and port = ?2 ",
+    @Query(value = "select * from sensors where collected > ?1 and port = ?2 limit 1000 ",
             nativeQuery = true)
     List<Sensors> findByCollected(LocalDateTime collected, Long port);
 

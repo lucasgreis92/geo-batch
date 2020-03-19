@@ -6,6 +6,8 @@ import br.com.spintec.logicae.geobatch.model.Sensors;
 import br.com.spintec.logicae.geobatch.repository.CraneDataRepository;
 import br.com.spintec.logicae.geobatch.repository.DevicesRepository;
 import br.com.spintec.logicae.geobatch.repository.SensorsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,6 +31,8 @@ public class DevicesService {
 
     @Autowired
     private SensorsRepository sensorsRepository;
+
+    final static Logger log = LoggerFactory.getLogger(LesenseBatchService.class);
 
     private static final List<Integer> PORT_LIST = Arrays.asList(0,1,2,3,4,5,6,7,8,9,10);
 
@@ -81,6 +85,7 @@ public class DevicesService {
 
                         }
                         if (!inserts.isEmpty()) {
+                            log.info(" ######### inserindo sensor "+ devices.getDeviceSerial() + " porta " + port + " ######### ");
                             craneDataRepository.saveAll(inserts);
                         }
 
