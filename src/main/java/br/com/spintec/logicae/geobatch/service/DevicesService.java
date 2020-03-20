@@ -49,7 +49,7 @@ public class DevicesService {
 
                 LocalDateTime lastOff = craneDataRepository.findLastOff(devices.getDeviceSerial(),port);
                 if (lastOff != null) {
-                    List<Sensors> sensorsList = sensorsRepository.findByCollected(lastOff, (long) port);
+                    List<Sensors> sensorsList = sensorsRepository.findByCollected(devices.getDeviceSerial(), lastOff, (long) port);
                     if (sensorsList != null && !sensorsList.isEmpty()) {
                         List<CraneData> inserts = new ArrayList<>();
                         CraneData newCrane = null;

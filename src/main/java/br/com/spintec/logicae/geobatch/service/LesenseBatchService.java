@@ -95,7 +95,7 @@ public class LesenseBatchService {
                 }).findFirst().isPresent()) {
                     devicesService.generateData(d);
                 }
-                
+
             });
             log.info("######################### finalizado generateData #########################");
             List<SensorsTmp> tmps = sensorsTmpService.findAll();
