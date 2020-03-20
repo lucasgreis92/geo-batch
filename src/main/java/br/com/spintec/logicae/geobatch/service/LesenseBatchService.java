@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 @Service
 public class LesenseBatchService {
+
+    @Value("${geo.force.sensors}")
+    private String geoForceSensors;
 
     @Autowired
     private LesenseBatchRepository lesenseBatchRepository;
@@ -87,8 +87,15 @@ public class LesenseBatchService {
             List<Devices> devices = devicesRepository.findAll();
             log.info("######################### iniciado generateData #########################");
             devices.forEach( d -> {
-                devicesService.generateData(d);
 
+                if (geoForceSensors.equalsIgnoreCase("*")) {
+                    devicesService.generateData(d);
+                }else if (Arrays.asList(geoForceSensors.split(",")).stream().filter( serial -> {
+                    return serial.equalsIgnoreCase(d.getDeviceSerial());
+                }).findFirst().isPresent()) {
+                    devicesService.generateData(d);
+                }
+                
             });
             log.info("######################### finalizado generateData #########################");
             List<SensorsTmp> tmps = sensorsTmpService.findAll();
