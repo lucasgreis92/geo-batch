@@ -44,9 +44,6 @@ public class LesenseBatchService {
     @Autowired
     private DevicesService devicesService;
 
-    private Semaphore semaphoreSendSensors = new Semaphore(1);
-    private static boolean ieSendSensors = false;
-
     final static Logger log = LoggerFactory.getLogger(LesenseBatchService.class);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -57,7 +54,6 @@ public class LesenseBatchService {
             log.info("######################### finalizado sendSensors #########################");
         } catch (Exception ex) {
             log.error("erro sendSensors",ex);
-            ieSendSensors = false;
         }
     }
 
@@ -85,20 +81,6 @@ public class LesenseBatchService {
         try {
             batch = newLesenseBatch();
             List<Devices> devices = devicesRepository.findAll();
-            log.info("######################### iniciado generateData #########################");
-            devices.forEach( d -> {
-                if (geoForceSensors.equalsIgnoreCase("-")) {
-
-                } else if (geoForceSensors.equalsIgnoreCase("*")) {
-                    devicesService.generateData(d);
-                } else if (Arrays.asList(geoForceSensors.split(",")).stream().filter( serial -> {
-                    return serial.equalsIgnoreCase(d.getDeviceSerial());
-                }).findFirst().isPresent()) {
-                    devicesService.generateData(d);
-                }
-
-            });
-            log.info("######################### finalizado generateData #########################");
             List<SensorsTmp> tmps = sensorsTmpService.findAll();
             if (tmps.isEmpty()) {
                 return;
@@ -141,21 +123,6 @@ public class LesenseBatchService {
                 sensores =  sensorsService.saveAll(sensores);
             }
             sensorsTmpService.deleteAll(tmps);
-            if (!sensores.isEmpty()) {
-                sensores.forEach( s -> {
-                    devicesService.generateData(  devices.stream().filter(d -> {
-                        return d.getDeviceSerial().equalsIgnoreCase(s.getDeviceSerial());
-                    }).findFirst().get());
-                });
-            }
-            List<Sensors> sensoresAux = sensores;
-            devices.forEach( d -> {
-                if (sensoresAux.stream().filter( s -> {
-                    return s.getDeviceSerial().equalsIgnoreCase(d.getDeviceSerial());
-                }).findFirst().isPresent()) {
-                    devicesService.generateData(d);
-                }
-            });
 
         } catch (Exception ex) {
             log.error("erro sendSensors", ex);
@@ -166,6 +133,26 @@ public class LesenseBatchService {
         } finally {
             finalizarBatch(batch, qtdRowsGenerated, qtdRowsSended, error);
         }
+    }
+
+    public void generateData() {
+        log.info("######################### iniciado generateData #########################");
+        List<Devices> devices = devicesRepository.findAll();
+        devices.forEach( d -> {
+            if (geoForceSensors.equalsIgnoreCase("-")) {
+
+            } else if (geoForceSensors.equalsIgnoreCase("*")) {
+                devicesService.generateData(d);
+            } else if (Arrays.asList(geoForceSensors.split(",")).stream().filter( serial -> {
+                return serial.equalsIgnoreCase(d.getDeviceSerial());
+            }).findFirst().isPresent()) {
+                devicesService.generateData(d);
+            }
+        });
+        devices.forEach( d -> {
+            devicesService.generateData(d);
+        });
+        log.info("######################### finalizado generateData #########################");
     }
 
 }
