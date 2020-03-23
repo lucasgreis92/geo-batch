@@ -87,10 +87,11 @@ public class LesenseBatchService {
             List<Devices> devices = devicesRepository.findAll();
             log.info("######################### iniciado generateData #########################");
             devices.forEach( d -> {
+                if (geoForceSensors.equalsIgnoreCase("-")) {
 
-                if (geoForceSensors.equalsIgnoreCase("*")) {
+                } else if (geoForceSensors.equalsIgnoreCase("*")) {
                     devicesService.generateData(d);
-                }else if (Arrays.asList(geoForceSensors.split(",")).stream().filter( serial -> {
+                } else if (Arrays.asList(geoForceSensors.split(",")).stream().filter( serial -> {
                     return serial.equalsIgnoreCase(d.getDeviceSerial());
                 }).findFirst().isPresent()) {
                     devicesService.generateData(d);
@@ -147,7 +148,14 @@ public class LesenseBatchService {
                     }).findFirst().get());
                 });
             }
-
+            List<Sensors> sensoresAux = sensores;
+            devices.forEach( d -> {
+                if (sensoresAux.stream().filter( s -> {
+                    return s.getDeviceSerial().equalsIgnoreCase(d.getDeviceSerial());
+                }).findFirst().isPresent()) {
+                    devicesService.generateData(d);
+                }
+            });
 
         } catch (Exception ex) {
             log.error("erro sendSensors", ex);
