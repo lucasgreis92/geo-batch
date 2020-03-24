@@ -33,4 +33,43 @@ public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
             "order by collected desc",
             nativeQuery = true)
     List<Sensors> findByFilter(String device, Long port ,LocalDateTime collectedIni, LocalDateTime collectedFim);
+
+    @Query(value = "select * from sensors s " +
+            "where s.collected = (select max(s1.collected)" +
+            "                   from sensors s1 " +
+            "                   where s1.device_serial = ?1" +
+            "                   and s1.port = ?2) " +
+            "and s.device_serial = ?1 " +
+            "and s.port = ?2 " +
+            "limit 1 ",
+            nativeQuery = true)
+    Sensors findLast(String device, Long port);
+
+    @Query(value = "select * from sensors s " +
+            "where s.collected = (select max(s1.collected) " +
+            "                   from sensors s1 " +
+            "                   where s1.device_serial = ?1 " +
+            "                   and s1.port = ?2" +
+            "                   and s1.value <> ?3) " +
+            "and s.device_serial = ?1 " +
+            "and s.port = ?2 " +
+            "and s.value <> ?3 " +
+            "limit 1 ",
+            nativeQuery = true)
+    Sensors findLastOtherValue(String device, Long port, Double value);
+
+    @Query(value = "select * from sensors s " +
+            "where s.collected = (select max(s1.collected) " +
+            "                   from sensors s1 " +
+            "                   where s1.device_serial = ?1 " +
+            "                   and s1.port = ?2" +
+            "                   and s1.value = ?3" +
+            "                   and collected >= ?4) " +
+            "and s.device_serial = ?1 " +
+            "and s.port = ?2 " +
+            "and s.value = ?3 " +
+            "and collected >= ?4 " +
+            "limit 1 ",
+            nativeQuery = true)
+    Sensors findFirstLastValue(String device, Long port, Double value, LocalDateTime data);
 }
