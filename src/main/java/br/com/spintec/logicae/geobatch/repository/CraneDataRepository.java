@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface CraneDataRepository extends JpaRepository<CraneData, UUID>, CraneDataRepositoryCustom {
 
-    @Query(value = "select coalesce(max(cd.off), current_timestamp - INTERVAL '60 days') " +
+    @Query(value = "select coalesce(max(cd.off), current_timestamp - INTERVAL '180 days') " +
             "from crane_data cd " +
             "where cd.device_serial = ?1 " +
             "and cd.port = ?2",
