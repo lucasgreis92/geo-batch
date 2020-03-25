@@ -59,14 +59,14 @@ public class LesenseBatchService {
 
     public LesenseBatch newLesenseBatch() {
         LesenseBatch batch = new LesenseBatch();
-        batch.setDtCreate(LocalDateTime.now());
+        batch.setDtCreate(findNow());
         batch.setQtdRowsSended(0L);
         batch.setQtdRowsGenerated(0L);
         return lesenseBatchRepository.save(batch);
     }
 
     public LesenseBatch finalizarBatch(LesenseBatch batch, Long qtdRowsGenerated, Long qtdRowsSended,String error) {
-        batch.setDtFinished(LocalDateTime.now());
+        batch.setDtFinished(findNow());
         batch.setQtdRowsGenerated(qtdRowsGenerated);
         batch.setQtdRowsSended(qtdRowsSended);
         batch.setError(error);
@@ -95,7 +95,7 @@ public class LesenseBatchService {
                 }).findFirst();
                 if (!device.isPresent()) {
                   /*  Devices dev = new Devices();
-                    dev.setCreated(LocalDateTime.now());
+                    dev.setCreated(findNow();
                     dev.setDeviceSerial(sensor.getDeviceSerial());
                     dev.setType(sensor.getType());
                     dev.setDisabled(false);
@@ -105,7 +105,7 @@ public class LesenseBatchService {
                         Optional<Contracts> contract = contracts.stream().filter( c -> {
                             return c.getContractId().toString().equalsIgnoreCase(device.get().getContractId().toString());
                         }).findFirst();
-                        device.get().setLastAck(LocalDateTime.now());
+                        device.get().setLastAck(findNow());
                         if (contract.isPresent()) {
                             sensor.setUserId(contract.get().getUserId());
                         }
@@ -153,6 +153,10 @@ public class LesenseBatchService {
             devicesService.generateData(d);
         });
         log.info("######################### finalizado generateData #########################");
+    }
+
+    public LocalDateTime findNow() {
+        return LocalDateTime.now().minusHours(3);
     }
 
 }

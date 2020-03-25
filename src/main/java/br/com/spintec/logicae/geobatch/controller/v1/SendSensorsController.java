@@ -11,7 +11,7 @@ public class SendSensorsController {
     @Autowired
     private LesenseBatchService lesenseBatchService;
 
-    @Scheduled(cron = "*/30 * * ? * *")
+    @Scheduled(cron = "*/20 * * ? * *")
     public void sendSensors() {
         lesenseBatchService.sendSensorsStart();
     }

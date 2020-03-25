@@ -20,13 +20,13 @@ public class SensorsTmpMapper extends AbstractMapper<SensorsTmp, SensorsDtoV1> {
         model.setId(dto.getId());
         model.setDeviceSerial(dto.getSerial());
         model.setModel(dto.getModel());
-        model.setCollected(Instant.ofEpochMilli(dto.getTimestamp()*1000).atZone(ZoneId.systemDefault()).toLocalDateTime());
+        model.setCollected(Instant.ofEpochMilli(dto.getTimestamp()*1000).atZone(ZoneId.systemDefault()).toLocalDateTime().minusHours(3));
         model.setVersion(dto.getVersion());
         model.setValue(dto.getValue());
         long port = (long) dto.getSensor();
         model.setPort(port);
         model.setType(dto.getType());
-        model.setCreated(LocalDateTime.now());
+        model.setCreated(findNow());
         return model;
     }
 
@@ -69,16 +69,9 @@ public class SensorsTmpMapper extends AbstractMapper<SensorsTmp, SensorsDtoV1> {
     }
 
 
-
-
-
-
-
-
-
-
-
-
+    public LocalDateTime findNow() {
+        return LocalDateTime.now().minusHours(3);
+    }
 
 
 }

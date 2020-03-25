@@ -61,7 +61,7 @@ public class DevicesService {
                                     || lastCrane.getOff().equals(sensors.getCollected()))) {
 
                                 newCrane = new CraneData();
-                                newCrane.setCreated(LocalDateTime.now());
+                                newCrane.setCreated(findNow());
                                 newCrane.setDeviceSerial(devices.getDeviceSerial());
                                 newCrane.setPort((int)sensors.getPort());
                                 newCrane.setId(sensors.getId());
@@ -93,6 +93,10 @@ public class DevicesService {
       /*  devicesRepository.flush();
         devicesRepository.generateData(serial);
         devicesRepository.flush();*/
+    }
+
+    public LocalDateTime findNow() {
+        return LocalDateTime.now().minusHours(3);
     }
 
     public Optional<Devices> findById(String serial) {
