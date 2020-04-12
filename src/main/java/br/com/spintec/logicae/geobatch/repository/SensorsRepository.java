@@ -1,6 +1,8 @@
 package br.com.spintec.logicae.geobatch.repository;
 
 import br.com.spintec.logicae.geobatch.model.Sensors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,7 +16,9 @@ public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
 
     @Query(value = "select * from sensors where device_serial = ?1 and collected > ?2 and port = ?3 order by collected asc limit 5000 ",
             nativeQuery = true)
-    List<Sensors> findByCollected(String device, LocalDateTime collected, Long port);
+    List<Sensors> findByCollected(String device,
+                                  LocalDateTime collected,
+                                  Long port);
 
 
     @Query(value = "select * from sensors " +
@@ -23,7 +27,9 @@ public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
             "and collected <= ?3 " +
             "order by collected desc",
             nativeQuery = true)
-    List<Sensors> findByFilter(String device, LocalDateTime collectedIni, LocalDateTime collectedFim);
+    List<Sensors> findByFilter(String device,
+                               LocalDateTime collectedIni,
+                               LocalDateTime collectedFim);
 
     @Query(value = "select * from sensors " +
             "where device_serial = ?1 " +
@@ -32,7 +38,21 @@ public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
             "and collected <= ?4 " +
             "order by collected desc",
             nativeQuery = true)
-    List<Sensors> findByFilter(String device, Long port ,LocalDateTime collectedIni, LocalDateTime collectedFim);
+    List<Sensors> findByFilter(String device,
+                               Long port ,
+                               LocalDateTime collectedIni,
+                               LocalDateTime collectedFim);
+
+    Page<Sensors> findByDeviceSerialAndPortAndCollectedBetween(String device,
+                                                               Long port ,
+                                                               LocalDateTime collectedIni,
+                                                               LocalDateTime collectedFim,
+                                                               Pageable pageable);
+
+    Page<Sensors> findByDeviceSerialAndCollectedBetween(String device,
+                                                        LocalDateTime collectedIni,
+                                                        LocalDateTime collectedFim,
+                                                        Pageable pageable);
 
     @Query(value = "select * from sensors s " +
             "where s.collected = (select max(s1.collected)" +

@@ -2,6 +2,8 @@ package br.com.spintec.logicae.geobatch.repository;
 
 import br.com.spintec.logicae.geobatch.model.CraneData;
 import br.com.spintec.logicae.geobatch.repository.custom.CraneDataRepositoryCustom;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -34,4 +36,8 @@ public interface CraneDataRepository extends JpaRepository<CraneData, UUID>, Cra
             "order by cd.on desc",
             nativeQuery = true)
     List<CraneData> findByFilter(String device, Integer port , LocalDateTime collectedIni, LocalDateTime collectedFim);
+
+    Page<CraneData> findByDeviceSerialAndPortAndOnBetween(String device, Integer port , LocalDateTime collectedIni, LocalDateTime collectedFim, Pageable pageable);
+
+    Page<CraneData> findByDeviceSerialAndOnBetween(String device,  LocalDateTime collectedIni, LocalDateTime collectedFim, Pageable pageable);
 }

@@ -4,6 +4,11 @@ package br.com.spintec.logicae.geobatch.controller.v1;
 import br.com.spintec.logicae.geobatch.model.CraneData;
 import br.com.spintec.logicae.geobatch.repository.CraneDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,4 +38,22 @@ public class CraneDataControllerV1 {
         }
 
     }
-}
+
+    @GetMapping("pagination/filter")
+    public Page<CraneData> findByFilter(@RequestParam(required = true) String device,
+                                        @RequestParam(required = false) Long port ,
+                                        @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime collectedIni,
+                                        @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime collectedFim,
+                                        @PageableDefault(sort = {"dtCreated"},
+                                                direction = Sort.Direction.DESC,page = 0,size = 10) Pageable pageable) {
+
+        pageable = PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),Sort.by(Sort.Direction.ASC,"on"));
+        if (port == null) {
+            return craneDataRepository.findByDeviceSerialAndOnBetween(device, collectedIni, collectedFim, pageable);
+        } else{
+            return craneDataRepository.findByDeviceSerialAndPortAndOnBetween(device, port.intValue(), collectedIni, collectedFim, pageable);
+        }
+    }
+
+
+    }
