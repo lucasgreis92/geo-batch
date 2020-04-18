@@ -37,7 +37,7 @@ public interface CraneDataRepository extends JpaRepository<CraneData, UUID>, Cra
             nativeQuery = true)
     List<CraneData> findByFilter(String device, Integer port , LocalDateTime collectedIni, LocalDateTime collectedFim);
 
-    Page<CraneData> findByDeviceSerialAndPortAndOnBetween(String device, Integer port , LocalDateTime collectedIni, LocalDateTime collectedFim, Pageable pageable);
+    Page<CraneData> findByDeviceSerialAndPortAndOffBetween(String device, Integer port , LocalDateTime collectedIni, LocalDateTime collectedFim, Pageable pageable);
 
-    Page<CraneData> findByDeviceSerialAndOnBetween(String device,  LocalDateTime collectedIni, LocalDateTime collectedFim, Pageable pageable);
+    Page<CraneData> findByDeviceSerialAndOffBetween(String device, LocalDateTime collectedIni, LocalDateTime collectedFim, Pageable pageable);
 }

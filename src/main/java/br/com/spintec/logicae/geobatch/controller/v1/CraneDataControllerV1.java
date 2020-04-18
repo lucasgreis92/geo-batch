@@ -49,9 +49,9 @@ public class CraneDataControllerV1 {
 
         pageable = PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),Sort.by(Sort.Direction.ASC,"on"));
         if (port == null) {
-            return craneDataRepository.findByDeviceSerialAndOnBetween(device, collectedIni, collectedFim, pageable);
+            return craneDataRepository.findByDeviceSerialAndOffBetween(device, collectedIni, collectedFim, pageable);
         } else{
-            return craneDataRepository.findByDeviceSerialAndPortAndOnBetween(device, port.intValue(), collectedIni, collectedFim, pageable);
+            return craneDataRepository.findByDeviceSerialAndPortAndOffBetween(device, port.intValue(), collectedIni, collectedFim, pageable);
         }
     }
 
