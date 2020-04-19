@@ -43,7 +43,7 @@ public class DevicesService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void generateData(Devices devices) {
+    public void generateCraneData(Devices devices) {
         if (devices.getSubtype() != null && devices.getSubtype().equalsIgnoreCase("crane")) {
             PORT_LIST.forEach( port -> {
 

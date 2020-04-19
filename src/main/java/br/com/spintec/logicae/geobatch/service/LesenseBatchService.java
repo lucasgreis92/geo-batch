@@ -7,14 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +41,12 @@ public class LesenseBatchService {
 
     @Autowired
     private DevicesService devicesService;
+
+    @Autowired
+    private CalibrationDataRepository calibrationDataRepository;
+
+    @Autowired
+    private CalibrationsRepository calibrationsRepository;
 
     final static Logger log = LoggerFactory.getLogger(LesenseBatchService.class);
 
@@ -142,15 +146,15 @@ public class LesenseBatchService {
             if (geoForceSensors.equalsIgnoreCase("-")) {
 
             } else if (geoForceSensors.equalsIgnoreCase("*")) {
-                devicesService.generateData(d);
+                devicesService.generateCraneData(d);
             } else if (Arrays.asList(geoForceSensors.split(",")).stream().filter( serial -> {
                 return serial.equalsIgnoreCase(d.getDeviceSerial());
             }).findFirst().isPresent()) {
-                devicesService.generateData(d);
+                devicesService.generateCraneData(d);
             }
         });
         devices.forEach( d -> {
-            devicesService.generateData(d);
+            devicesService.generateCraneData(d);
         });
         log.info("######################### finalizado generateData #########################");
     }
@@ -159,4 +163,67 @@ public class LesenseBatchService {
         return LocalDateTime.now().minusHours(3);
     }
 
+    public void generateCalibrationData() {
+        log.info("######################### iniciado generateCalibrationData #########################");
+        List<Calibrations> calibrations = calibrationsRepository.findAllByDoneIsNull();
+        List<CalibrationData> datas = calibrationDataRepository.findAllNotDone();
+        calibrations.forEach(c -> {
+            List<CalibrationData> cdList = datas.stream()
+                    .filter( d -> {
+                        return  d.getCalibrationId().toString().equals(c.getCalibrationId().toString());
+                    }).collect(Collectors.toList());
+            Integer step = 1;
+            cdList.sort((a,b) -> {
+                return b.getCollected().compareTo(a.getCollected());
+            });
+            Optional<CalibrationData> lastCd = cdList.stream()
+                    .findFirst();
+            if (lastCd.isPresent()) {
+                if (!lastCd.get().isHumidityM2()) {
+                    step = 2;
+                } else if (!lastCd.get().isHumidityP2()) {
+                    step = 3;
+                } else if (!lastCd.get().isHumidityP4()) {
+                    step = 4;
+                } else {
+                    step = 0;
+                }
+            }
+            if (step > 0) {
+                List<CalibrationData> stepList = findByStep(step, cdList);
+                if (stepList.size() < 5) {
+                    List<Sensors> sensors = sensorsService
+                            .findToCalibrations(c.getDeviceSerial(), lastCd.isPresent()?
+                                    lastCd.get().getCollected() : LocalDateTime.now().minusHours(1));
+
+                    sensors.sort((a,b) -> {
+                        return a.getCollected().compareTo(b.getCollected());
+                    });
+                    for (int i = stepList.size(); i <=5;i++) {
+                        CalibrationData data = new CalibrationData();
+                        Sensors sensor = sensors.get(i+1);
+                        data.setValue(sensor.getValue());
+                        data.setStep(step);
+                        data.setCollected(sensor.getCollected());
+                        data.setCalibrationId(c.getCalibrationId());
+                        data.setDataId(sensor.getId());
+                        if (lastCd.isPresent()) {
+                            data.setBestHumidity(lastCd.get().isBestHumidity());
+                            data.setHumidityM2(lastCd.get().isHumidityM2());
+                            data.setHumidityP2(lastCd.get().isHumidityP2());
+                            data.setHumidityP4(lastCd.get().isHumidityP4());
+                        }
+                        calibrationDataRepository.save(data);
+                    }
+                }
+            }
+        });
+        log.info("######################### finalizado generateCalibrationData #########################");
+    }
+
+    public List<CalibrationData> findByStep(Integer step, List<CalibrationData> cdList) {
+        return cdList.stream().filter( ccd -> {
+            return ccd.getStep().intValue() == step.intValue();
+        }).collect(Collectors.toList());
+    }
 }

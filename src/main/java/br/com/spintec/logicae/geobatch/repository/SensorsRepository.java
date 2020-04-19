@@ -92,4 +92,13 @@ public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
             "limit 1 ",
             nativeQuery = true)
     Sensors findFirstLastValue(String device, Long port, Double value, LocalDateTime data);
+
+    @Query(value = "select * " +
+            "from sensors s " +
+            "where s.device_serial = ?1 " +
+            "and s.collected > ?2 " +
+            "order by s.collected desc" +
+            "limit 5 ",
+            nativeQuery = true)
+    List<Sensors> findToCalibrations(String device, LocalDateTime collected);
 }
