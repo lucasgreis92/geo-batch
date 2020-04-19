@@ -199,21 +199,24 @@ public class LesenseBatchService {
                     sensors.sort((a,b) -> {
                         return a.getCollected().compareTo(b.getCollected());
                     });
-                    for (int i = stepList.size(); i <=5;i++) {
-                        CalibrationData data = new CalibrationData();
-                        Sensors sensor = sensors.get(i+1);
-                        data.setValue(sensor.getValue());
-                        data.setStep(step);
-                        data.setCollected(sensor.getCollected());
-                        data.setCalibrationId(c.getCalibrationId());
-                        data.setDataId(sensor.getId());
-                        if (lastCd.isPresent()) {
-                            data.setBestHumidity(lastCd.get().isBestHumidity());
-                            data.setHumidityM2(lastCd.get().isHumidityM2());
-                            data.setHumidityP2(lastCd.get().isHumidityP2());
-                            data.setHumidityP4(lastCd.get().isHumidityP4());
+                    for (int i = stepList.size(); i < 5;i++) {
+                        if (!sensors.isEmpty() && sensors.size() > i ) {
+                            CalibrationData data = new CalibrationData();
+                            Sensors sensor = sensors.get(i);
+                            data.setValue(sensor.getValue());
+                            data.setStep(step);
+                            data.setCollected(sensor.getCollected());
+                            data.setCalibrationId(c.getCalibrationId());
+                            data.setDataId(sensor.getId());
+                            if (lastCd.isPresent()) {
+                                data.setBestHumidity(lastCd.get().isBestHumidity());
+                                data.setHumidityM2(lastCd.get().isHumidityM2());
+                                data.setHumidityP2(lastCd.get().isHumidityP2());
+                                data.setHumidityP4(lastCd.get().isHumidityP4());
+                            }
+                            calibrationDataRepository.save(data);
+                            log.info("Gerando callibration data to device " + sensor.getDeviceSerial() + " step " + step + " calibration_id " + c.getCalibrationId());
                         }
-                        calibrationDataRepository.save(data);
                     }
                 }
             }

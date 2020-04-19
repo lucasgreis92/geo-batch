@@ -1,4 +1,4 @@
-package br.com.spintec.logicae.geobatch.controller.v1;
+package br.com.spintec.logicae.geobatch.job;
 
 import br.com.spintec.logicae.geobatch.service.LesenseBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,13 +6,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GenerateDataControllerV1 {
+public class SendSensorsControllerJob {
 
     @Autowired
     private LesenseBatchService lesenseBatchService;
 
-    @Scheduled(cron = "*/30 * * ? * *")
-    public void generateData() {
-        lesenseBatchService.generateData();
+    @Scheduled(cron = "*/20 * * ? * *")
+    public void sendSensors() {
+        lesenseBatchService.sendSensorsStart();
     }
+
 }

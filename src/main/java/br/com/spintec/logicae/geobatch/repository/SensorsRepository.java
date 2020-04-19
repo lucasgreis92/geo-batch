@@ -97,8 +97,9 @@ public interface SensorsRepository extends JpaRepository<Sensors, UUID> {
             "from sensors s " +
             "where s.device_serial = ?1 " +
             "and s.collected > ?2 " +
-            "order by s.collected desc" +
+            "and s.port = ?3 " +
+            "order by s.collected desc " +
             "limit 5 ",
             nativeQuery = true)
-    List<Sensors> findToCalibrations(String device, LocalDateTime collected);
+    List<Sensors> findToCalibrations(String device, LocalDateTime collected, Long port );
 }

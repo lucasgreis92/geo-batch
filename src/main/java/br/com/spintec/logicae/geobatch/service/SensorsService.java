@@ -26,6 +26,6 @@ public class SensorsService {
     }
 
     public List<Sensors> findToCalibrations(String device, LocalDateTime collected) {
-        return sensorsRepository.findToCalibrations(device, collected);
+        return sensorsRepository.findToCalibrations(device, collected, 0L);
     }
 }

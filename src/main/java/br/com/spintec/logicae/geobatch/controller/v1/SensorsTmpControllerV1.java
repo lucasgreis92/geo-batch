@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/1.0/sensor/lesense")
-public class SensorsTmpController {
+public class SensorsTmpControllerV1 {
 
     @Autowired
     private SensorsTmpService sensorsTmpService;
