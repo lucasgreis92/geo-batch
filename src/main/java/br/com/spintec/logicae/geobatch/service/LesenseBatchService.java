@@ -179,14 +179,14 @@ public class LesenseBatchService {
             Optional<CalibrationData> lastCd = cdList.stream()
                     .findFirst();
             if (lastCd.isPresent()) {
-                if (!lastCd.get().isHumidityM2()) {
+                if (lastCd.get().isHumidityM2()) {
                     step = 2;
-                } else if (!lastCd.get().isHumidityP2()) {
+                } else if (lastCd.get().isHumidityP2()) {
                     step = 3;
-                } else if (!lastCd.get().isHumidityP4()) {
+                } else if (lastCd.get().isHumidityP4()) {
                     step = 4;
                 } else {
-                    step = 0;
+                    step = 1;
                 }
             }
             if (step > 0) {
